@@ -2,48 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class GameController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function search(Request $request)
     {
-        //
-    }
+        $searchQuery = $request->query('search');
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if (!$searchQuery) {
+            return response()->json([
+                'error' => 'Search query is required'
+            ], 400);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Game $game)
-    {
-        //
-    }
+        $url = "https://boardgamegeek.com/xmlapi/search?search=" . urlencode($searchQuery);
+        $response = Http::get($url);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Game $game)
-    {
-        //
-    }
+        try {
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Game $game)
-    {
-        //
+            if (!$response->successful()) {
+                return response()->json([
+                    'error' => 'Failed to fetch data from BoardGameGeek API'
+                ], 500);
+            }
+
+            $xml = simplexml_load_string($response->body());
+            $games = [];
+
+            foreach ($xml->boardgame as $game) {
+                $games[] = [
+                    'id' => (string) $game['objectid'],
+                    'name' => (string) $game->name,
+                ];
+            }
+
+            return response()->json($games, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'An error occurred: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

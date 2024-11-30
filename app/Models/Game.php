@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Game extends Model
 {
     protected $fillable = [
+        'bgg_id',
         'name',
-        'average_rating'
+        'score'
     ];
 
     public function ratings(): HasMany

@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ratings', function (Blueprint $table) {
+        Schema::create('podia', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('game_id')->constrained();
-            $table->tinyInteger('points')->unsigned()->default(0);
-            $table->timestamp('voted_at');
-            $table->string('user_name');
-            $table->string('email');
+            $table->date('month');
+            $table->json('results');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ratings');
+        Schema::dropIfExists('podia');
     }
 };

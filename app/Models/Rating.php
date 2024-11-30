@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Rating extends Model
 {
     protected $fillable = [
-        'user_id',
         'game_id',
-        'rating'
+        'points',
+        'voted_at',
+        'user_name',
+        'email'
     ];
 
     public function game(): BelongsTo
