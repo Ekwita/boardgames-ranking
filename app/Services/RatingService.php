@@ -25,15 +25,10 @@ class RatingService
         foreach ($voteDto->gamesRating as $gameRateDto) {
 
             $game = $this->gameRepository->findOrCreateGame($gameRateDto);
-            Log::info('Game selected');
 
             $this->ratingReposiotry->createRating($game, $voteDto, $gameRateDto);
-            Log::info('Rating created');
 
             $this->gameRepository->updateGameScore($game, $gameRateDto);
-            Log::info('Game score updated');
-
-            Log::info("Vote recorded for game: {$game->name}, points: {$gameRateDto->points}");
         }
 
 

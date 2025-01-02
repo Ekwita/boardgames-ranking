@@ -10,4 +10,8 @@ class Podium extends Model
         'month',
         'results'
     ];
+
+    protected $casts = [
+        'results' => 'array',
+    ];
 }

@@ -5,6 +5,7 @@ namespace App\Services\Ratings;
 use App\Dtos\VoteDto;
 use App\Models\Rating;
 use Carbon\Carbon;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RatingValidator
 {
@@ -16,7 +17,9 @@ class RatingValidator
             ->exists();
 
         if ($existingVotes) {
-            abort(403, 'You have already voted this month');
+            throw new HttpResponseException(
+                response()->json(['message' => 'You have already voted this month'], 403)
+            );
         }
     }
 }

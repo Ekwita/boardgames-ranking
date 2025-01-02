@@ -10,7 +10,7 @@ class Game extends Model
     protected $fillable = [
         'bgg_id',
         'name',
-        'score'
+        'score',
     ];
 
     public function ratings(): HasMany
