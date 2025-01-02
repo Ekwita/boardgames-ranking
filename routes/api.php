@@ -11,4 +11,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/search', [GameController::class, 'search']);
+Route::get('/index', [GameController::class, 'index']);
+
+
 Route::post('/vote', [RatingController::class, 'vote']);

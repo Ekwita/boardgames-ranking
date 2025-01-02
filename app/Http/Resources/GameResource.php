@@ -17,10 +17,9 @@ class GameResource extends JsonResource
         return
             [
                 'id' => $this->id,
+                'bgg_id' => $this->bggId,
                 'name' => $this->name,
-                'average_rating' => $this->average_rating,
-                'ratings_count' => $this->ratings->count(),
-                'ratings' => RatingResource::collection($this->ratings),
+                'score' => $this->score,
             ];
     }
 }

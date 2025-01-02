@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('game_id')->constrained();
             $table->tinyInteger('points')->unsigned()->default(0);
-            $table->timestamp('voted_at');
             $table->string('user_name');
             $table->string('email');
+            $table->timestamp('voted_at');
             $table->timestamps();
         });
     }

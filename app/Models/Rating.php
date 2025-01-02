@@ -10,9 +10,9 @@ class Rating extends Model
     protected $fillable = [
         'game_id',
         'points',
-        'voted_at',
         'user_name',
-        'email'
+        'email',
+        'voted_at',
     ];
 
     public function game(): BelongsTo

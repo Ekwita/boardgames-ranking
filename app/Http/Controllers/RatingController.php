@@ -2,82 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
-use App\Models\Rating;
+use App\Dtos\GameRateDto;
+use App\Dtos\VoteDto;
+use App\Http\Requests\VoteRequest;
+use App\Services\RatingService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
 
 class RatingController extends Controller
 {
-    public function vote(Request $request)
+
+    public function __construct(
+        protected RatingService $ratingService,
+    ) {}
+
+    public function vote(VoteRequest $request): JsonResponse
     {
-        $userName = $request->input('username');
-        $email = $request->input('email');
-        Log::info('Hey ' . $userName . '. Your email ' . $email . ' is correct.');
+        $validated = $request->validated();
 
-        // foreach ($votes as $vote) {
-        //     $gameId = $vote['id'];
-        //     $points = $vote['points'];
+        $collection = collect($validated['votes'])->map(function ($vote) {
+            return new GameRateDto(
+                $vote['id'],
+                $vote['name'],
+                $vote['points'],
 
-        // }
+            );
+        });
 
-        $currentMonth = Carbon::now()->format('Y-m');
+        $voteDto = new VoteDto(
+            $validated['username'],
+            $validated['email'],
+            $collection,
+            Carbon::now()->toDateString()
+        );
 
-        Log::info('Current month is ' . $currentMonth);
-
-        $existingVotes = Rating::where('email', $email)
-            ->whereYear('voted_at', Carbon::now()->year) // Sprawdzamy, czy rok zgadza się z aktualnym
-            ->whereMonth('voted_at', Carbon::now()->month) // Sprawdzamy, czy miesiąc zgadza się z aktualnym
-            ->exists();
-
-        if ($existingVotes) {
-            return response()->json(['message' => 'You have already voted this month'], 403);
-        }
-
-        $votes = $request->input('votes');
-
-
-        foreach ($votes as $vote) {
-            $gameId = $vote['id'];
-            $gameName = $vote['name'];
-            $points = $vote['points'];
-            Log::info('Game id is ' . $gameId . '. Game name is ' . $gameName . '. It has ' . $points . ' points.');
-
-
-            $game = Game::where('bgg_id', $vote['id'])->first();
-
-            if ($game) {
-                Log::info("Hey, we have this game: " . $game->name);
-                Rating::create([
-                    'game_id' => $game->id,
-                    'points' => $vote['points'],
-                    'voted_at' => Carbon::now()->toDateString(),
-                    'user_name' => $userName,
-                    'email' => $email
-                ]);
-            } else {
-                Log::info("Hey, we don't have this game.");
-                $game = Game::create([
-                    'bgg_id' => $vote['id'],
-                    'name' => $vote['name'],
-                ]);
-
-                Rating::create([
-                    'game_id' => $game->id,
-                    'points' => $vote['points'],
-                    'voted_at' => Carbon::now()->toDateString(),
-                    'user_name' => $userName,
-                    'email' => $email
-                ]);
-            }
-
-            $game->score += $vote['points'];
-            $game->save();
-        }
-
-
-        return response()->json(['message' => 'Vote submitted successfully']);
+        return $this->ratingService->handleVote($voteDto);
     }
 }
