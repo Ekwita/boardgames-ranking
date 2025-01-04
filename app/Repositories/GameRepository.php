@@ -15,6 +15,7 @@ class GameRepository
             $game = Game::create([
                 'bgg_id' => $gameRateDto->id,
                 'name' => $gameRateDto->name,
+                'image' => $gameRateDto->image
             ]);
         }
 

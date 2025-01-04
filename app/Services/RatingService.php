@@ -7,7 +7,6 @@ use App\Repositories\GameRepository;
 use App\Repositories\RatingReposiotry;
 use App\Services\Ratings\RatingValidator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class RatingService
 {

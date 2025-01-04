@@ -28,6 +28,7 @@ class VoteRequest extends FormRequest
             'votes.*.id' => 'required|integer|distinct',
             'votes.*.name' => 'required|string|max:255',
             'votes.*.points' => 'required|integer|min:1|max:3',
+            'votes.*.image' => 'nullable|string|max:1024', // Dodano walidację dla grafiki
         ];
     }
 

@@ -25,7 +25,7 @@ class RatingController extends Controller
                 $vote['id'],
                 $vote['name'],
                 $vote['points'],
-
+                $vote['image'] ?? null // Dodano ścieżkę pliku z grafiką
             );
         });
 

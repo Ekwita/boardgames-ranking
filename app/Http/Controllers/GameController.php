@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\GameCollection;
-use App\Http\Resources\GameResource;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -12,62 +11,99 @@ class GameController extends Controller
 {
     public function search(Request $request)
     {
-        // Pobieramy zapytanie `search` z parametru GET
         $query = $request->query('search', '');
 
-        // Walidacja, czy zapytanie nie jest puste
         if (empty($query)) {
             return response()->json([
                 'error' => 'Query parameter "search" is required.'
             ], 400);
         }
 
-        // Wykonanie zapytania do API BGG
-        $response = Http::get("https://boardgamegeek.com/xmlapi2/search?query={$query}&type=boardgame");
+        // Pobierz wyniki wyszukiwania
+        $games = $this->fetchSearchResults($query);
 
-        // Sprawdzenie, czy API zwróciło poprawną odpowiedź
-        if ($response->failed()) {
+        if (empty($games)) {
             return response()->json([
-                'error' => 'Failed to fetch data from BGG API.'
+                'error' => 'No games found or failed to fetch data.'
             ], 500);
         }
 
-        // Parsowanie XML do tablicy
-        $xml = simplexml_load_string($response->body());
+        // Pobierz szczegóły gier równolegle
+        $games = $this->fetchGameDetails($games);
 
-        // Transformacja danych z XML do JSON
+        return response()->json(array_values($games));
+    }
+
+    private function fetchSearchResults(string $query): array
+    {
+        $response = Http::get("https://boardgamegeek.com/xmlapi2/search?query={$query}&type=boardgame");
+
+        if ($response->failed()) {
+            return [];
+        }
+
+        $xml = simplexml_load_string($response->body());
         $games = [];
+
         foreach ($xml->item as $item) {
+            $gameId = $item['id'] ?? null;
             $name = $item->name['value'] ?? null;
             $yearPublished = $item->yearpublished['value'] ?? null;
-            if ($name) {
-                $games[] = [
-                    'id' => (string) $item['id'],
+
+            if ($gameId && $name) {
+                $games[(string) $gameId] = [
+                    'id' => (string) $gameId,
                     'name' => (string) $name,
                     'year' => $yearPublished ? (string) $yearPublished : null,
                 ];
             }
         }
 
-        // Zwracamy dane jako JSON
-        return response()->json($games);
+        return $games;
+    }
+
+    private function fetchGameDetails(array $games): array
+    {
+        $gameIds = array_keys($games);
+
+        // Wykonaj równoległe zapytania
+        $requests = Http::pool(function ($pool) use ($gameIds) {
+            return array_map(function ($gameId) use ($pool) {
+                return $pool->get("https://boardgamegeek.com/xmlapi2/thing?id={$gameId}");
+            }, $gameIds);
+        });
+
+        // Przetwarzanie odpowiedzi
+        foreach ($requests as $key => $response) {
+            if ($response->successful()) {
+                $detailXml = simplexml_load_string($response->body());
+                $detail = $detailXml->item;
+
+                if ($detail) {
+                    $thumbnail = $detail->image ?? null;
+                    if ($thumbnail) {
+                        $games[$gameIds[$key]]['image'] = (string) $thumbnail;
+                    }
+                }
+            }
+        }
+
+        return $games;
     }
 
     public function getBestGames(): GameCollection
     {
-        // Pobranie gier z najwyższymi wynikami (maksymalnie 5 różnych wyników)
+
         $topScores = Game::orderBy('score', 'desc')
             ->distinct()
             ->limit(5)
             ->pluck('score');
 
-        // Pobranie gier, które mają te wyniki, z ograniczeniem do 5 pozycji
         $topGames = Game::whereIn('score', $topScores)
             ->orderBy('score', 'desc')
             ->limit(5)
             ->get();
 
-        // Zwrócenie kolekcji jako GameCollection
         return new GameCollection($topGames);
     }
 }

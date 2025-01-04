@@ -8,6 +8,7 @@ class GameRateDto
         public string $id,
         public string $name,
         public int $points,
+        public ?string $image,
     ) {}
 
     public function toArray(): array
@@ -15,7 +16,8 @@ class GameRateDto
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'points' => $this->points
+            'points' => $this->points,
+            'image' => $this->image
         ];
     }
 }

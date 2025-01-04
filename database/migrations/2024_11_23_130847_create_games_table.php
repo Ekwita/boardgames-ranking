@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('bgg_id');
             $table->string('name');
             $table->integer('score')->default(0);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
