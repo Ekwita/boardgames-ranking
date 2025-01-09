@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\GameController;
-use App\Http\Controllers\RatingController;
+use App\Http\Controllers\CurrentRankingController;
+use App\Http\Controllers\GameSearchController;
+use App\Http\Controllers\GameVoteController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,8 +11,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/search', [GameController::class, 'search']);
-Route::get('/index', [GameController::class, 'getBestGames']);
+Route::get('/search', [GameSearchController::class, 'search']);
+Route::get('/index', [CurrentRankingController::class, 'getCurrentRanking']);
 
 
-Route::post('/vote', [RatingController::class, 'vote']);
+Route::post('/vote', [GameVoteController::class, 'vote']);

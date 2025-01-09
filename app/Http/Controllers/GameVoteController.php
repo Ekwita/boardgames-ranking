@@ -9,7 +9,7 @@ use App\Services\RatingService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
-class RatingController extends Controller
+class GameVoteController extends Controller
 {
 
     public function __construct(
