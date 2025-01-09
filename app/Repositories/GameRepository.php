@@ -25,6 +25,7 @@ class GameRepository
     public function updateGameScore(Game $game, GameRateDto $gameRateDto): void
     {
         $game->score += $gameRateDto->points;
+        $game->votes++;
         $game->save();
     }
 }

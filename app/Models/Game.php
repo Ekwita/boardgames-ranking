@@ -11,7 +11,8 @@ class Game extends Model
         'bgg_id',
         'name',
         'score',
-        'image'
+        'image',
+        'votes'
     ];
 
     public function ratings(): HasMany
