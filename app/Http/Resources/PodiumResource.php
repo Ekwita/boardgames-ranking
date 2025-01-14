@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GameResource extends JsonResource
+class PodiumResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +14,9 @@ class GameResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return
-            [
-                'id' => $this->id,
-                'bgg_id' => $this->bggId,
-                'name' => $this->name,
-                'score' => $this->score,
-                'image' => $this->image,
-            ];
+        return [
+            'month' => $this->month,
+            'results' => $this->results,
+        ];
     }
 }

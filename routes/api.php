@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchiveRankingController;
 use App\Http\Controllers\CurrentRankingController;
 use App\Http\Controllers\GameSearchController;
 use App\Http\Controllers\GameVoteController;
@@ -16,3 +17,5 @@ Route::get('/index', [CurrentRankingController::class, 'getCurrentRanking']);
 
 
 Route::post('/vote', [GameVoteController::class, 'vote']);
+
+Route::get('/archive', [ArchiveRankingController::class, 'listArchivedRankings']);
