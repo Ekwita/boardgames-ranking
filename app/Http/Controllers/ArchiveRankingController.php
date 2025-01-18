@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Rankings\ArchiveRankingService;
+use App\Http\Resources\PodiumCollection;
+use App\Services\Rankings\Interfaces\ArchiveRankingServiceInterface;
 
 class ArchiveRankingController
 {
-public function __construct(public ArchiveRankingService $archiveRankingService)
+public function __construct(protected ArchiveRankingServiceInterface $archiveRankingService)
 {}
 
-    public function listArchivedRankings()
+    public function listArchivedRankings(): PodiumCollection
     {
         $podiaCollection = $this->archiveRankingService->archivePodia();
 

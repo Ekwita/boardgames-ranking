@@ -4,8 +4,9 @@ namespace App\Services\Rankings;
 
 use App\Http\Resources\GameCollection;
 use App\Models\Game;
+use App\Services\Rankings\Interfaces\CurrentRankingServiceInterface;
 
-class CurrentRankingService
+class CurrentRankingService implements CurrentRankingServiceInterface
 {
     public function getCurrentRanking(): GameCollection
     {

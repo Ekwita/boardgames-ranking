@@ -4,8 +4,10 @@ namespace App\Services\Rankings;
 
 use App\Http\Resources\PodiumCollection;
 use App\Models\Podium;
+use App\Services\Rankings\Interfaces\ArchiveRankingServiceInterface;
+use Illuminate\Support\Collection;
 
-class ArchiveRankingService
+class ArchiveRankingService implements ArchiveRankingServiceInterface
 {
     public function archivePodia(): PodiumCollection
     {
@@ -16,7 +18,7 @@ class ArchiveRankingService
         return $podiaCollection;
     }
 
-    private function getPodiums()
+    private function getPodiums(): Collection
     {
         return Podium::all();
     }
