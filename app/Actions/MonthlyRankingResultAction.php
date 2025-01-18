@@ -39,9 +39,10 @@ class MonthlyRankingResultAction
 
     private function getBestGames(): Collection
     {
-        $topGames = Game::orderBy('score', 'desc')
+        $topGames = Game::where('score', '>', 0)
+            ->orderBy('score', 'desc')
             ->orderBy('votes', 'desc')
-            ->limit(3)
+            ->limit(10)
             ->get();
         Log::info('Games are selected');
 

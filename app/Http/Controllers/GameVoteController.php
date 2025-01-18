@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Dtos\GameRateDto;
-use App\Dtos\VoteDto;
 use App\Http\Requests\VoteRequest;
+use App\Mappers\VoteMapper;
 use App\Services\RatingService;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
 class GameVoteController extends Controller
@@ -14,27 +12,14 @@ class GameVoteController extends Controller
 
     public function __construct(
         protected RatingService $ratingService,
+        protected VoteMapper $voteMapper,
     ) {}
 
     public function vote(VoteRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
-        $collection = collect($validated['votes'])->map(function ($vote) {
-            return new GameRateDto(
-                $vote['id'],
-                $vote['name'],
-                $vote['points'],
-                $vote['image'] ?? null
-            );
-        });
-
-        $voteDto = new VoteDto(
-            $validated['username'],
-            $validated['email'],
-            $collection,
-            Carbon::now()->toDateString()
-        );
+        $voteDto = $this->voteMapper->map($validated);
 
         return $this->ratingService->handleVote($voteDto);
     }

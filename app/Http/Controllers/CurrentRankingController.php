@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\GameCollection;
-use App\Models\Game;
+use App\Services\Rankings\CurrentRankingService;
 
 class CurrentRankingController extends Controller
 {
+    public function __construct(public CurrentRankingService $currentRankingService) {}
+
     public function getCurrentRanking(): GameCollection
     {
-        $topGames = Game::orderBy('score', 'desc')
-            ->orderBy('votes', 'desc')
-            ->limit(5)
-            ->get();
+        $currentRanking = $this->currentRankingService->getCurrentRanking();
 
-        return new GameCollection($topGames);
+        return $currentRanking;
     }
 }

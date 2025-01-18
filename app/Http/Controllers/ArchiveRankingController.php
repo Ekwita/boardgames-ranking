@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PodiumCollection;
-use App\Http\Resources\PodiumResource;
-use App\Models\Podium;
+use App\Services\Rankings\ArchiveRankingService;
 
 class ArchiveRankingController
 {
+public function __construct(public ArchiveRankingService $archiveRankingService)
+{}
+
     public function listArchivedRankings()
     {
-        $podiaList = Podium::all();
-
-        $podiaCollection = new PodiumCollection($podiaList);
+        $podiaCollection = $this->archiveRankingService->archivePodia();
 
         return $podiaCollection;
-    }
-    public function getArchiveRankingByMonth(): PodiumResource
-    {
-        return PodiumResource::make(Podium::find(1));
     }
 }
