@@ -4,8 +4,9 @@ namespace App\Repositories;
 
 use App\Dtos\GameRateDto;
 use App\Models\Game;
+use App\Repositories\Interfaces\GameRepositoryInterface;
 
-class GameRepository
+class GameRepository implements GameRepositoryInterface
 {
     public function findOrCreateGame(GameRateDto $gameRateDto): Game
     {

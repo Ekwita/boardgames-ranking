@@ -6,8 +6,9 @@ use App\Dtos\GameRateDto;
 use App\Dtos\VoteDto;
 use App\Models\Game;
 use App\Models\Rating;
+use App\Repositories\Interfaces\RatingRepositoryInterface;
 
-class RatingReposiotry
+class RatingRepository implements RatingRepositoryInterface
 {
     public function createRating(Game $game, VoteDto $voteDto, GameRateDto $gameRateDto): void
     {

@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Ratings;
 
 use App\Dtos\VoteDto;
-use App\Repositories\GameRepository;
-use App\Repositories\RatingReposiotry;
+use App\Repositories\Interfaces\GameRepositoryInterface;
+use App\Repositories\Interfaces\RatingRepositoryInterface;
+use App\Services\Ratings\Interfaces\RatingServiceInterface;
 use App\Services\Ratings\RatingValidator;
 use Illuminate\Http\JsonResponse;
 
-class RatingService
+class RatingService implements RatingServiceInterface
 {
     public function __construct(
         protected RatingValidator $ratingValidator,
-        protected GameRepository $gameRepository,
-        protected RatingReposiotry $ratingReposiotry,
+        protected GameRepositoryInterface $gameRepository,
+        protected RatingRepositoryInterface $ratingReposiotry,
     ) {}
 
     public function handleVote(VoteDto $voteDto): JsonResponse
