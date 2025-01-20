@@ -12,3 +12,9 @@ Artisan::command('inspire', function () {
 Schedule::call(
     new MonthlyRankingResultAction
 )->monthly();
+
+
+Artisan::command('monthly-ranking', function () {
+    app(MonthlyRankingResultAction::class)();
+    $this->info('Monthly ranking has been successfully processed.');
+})->purpose('Create a new monthly ranking');
