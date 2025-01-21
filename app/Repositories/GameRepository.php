@@ -17,7 +17,7 @@ class GameRepository implements GameRepositoryInterface
             $game = Game::create([
                 'bgg_id' => $gameRateDto->id,
                 'name' => $gameRateDto->name,
-                'image' => $gameRateDto->image
+                'image' => is_null($gameRateDto->image) ? $this->addMissingImage($gameRateDto->id) : $gameRateDto->image,
             ]);
         }
 
