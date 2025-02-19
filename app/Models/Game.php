@@ -10,6 +10,7 @@ class Game extends Model
     protected $fillable = [
         'bgg_id',
         'name',
+        'hyperlink',
         'score',
         'image',
         'votes'

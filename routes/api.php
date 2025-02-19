@@ -19,3 +19,4 @@ Route::get('/index', [CurrentRankingController::class, 'getCurrentRanking']);
 Route::post('/vote', [GameVoteController::class, 'vote']);
 
 Route::get('/archive', [ArchiveRankingController::class, 'listArchivedRankings']);
+Route::get('/last', [ArchiveRankingController::class, 'lastRankingPodium']);

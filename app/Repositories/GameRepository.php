@@ -17,6 +17,7 @@ class GameRepository implements GameRepositoryInterface
             $game = Game::create([
                 'bgg_id' => $gameRateDto->id,
                 'name' => $gameRateDto->name,
+                'hyperlink' => "https://boardgamegeek.com/boardgame/{$gameRateDto->id}",
                 'image' => is_null($gameRateDto->image) ? $this->addMissingImage($gameRateDto->id) : $gameRateDto->image,
             ]);
         }
@@ -29,6 +30,11 @@ class GameRepository implements GameRepositoryInterface
         if (is_null($game->image)) {
             $game->image = $this->addMissingImage($gameRateDto->id);
         }
+
+        if (is_null($game->hyperlink)) {
+            $game->hyperlink = $this->addMissingHyperlink($gameRateDto->id);
+        }
+        
         $game->score += $gameRateDto->points;
         $game->votes++;
         $game->save();
@@ -45,5 +51,10 @@ class GameRepository implements GameRepositoryInterface
             $thumbnail = $detail->image ?? null;
             return $thumbnail ? (string) $thumbnail : '';
         }
+    }
+
+    private function addMissingHyperlink(int $bggId): ?string
+    {
+        return "https://boardgamegeek.com/boardgame/{$bggId}";
     }
 }
